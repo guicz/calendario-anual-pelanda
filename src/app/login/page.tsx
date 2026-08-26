@@ -16,7 +16,7 @@ function PinIcon() {
 }
 
 export default function LoginPage() {
-  const [mode, setMode] = useState<AccessMode>("google");
+  const [mode, setMode] = useState<AccessMode>("pin");
   const [pin, setPin] = useState("");
   const [notice, setNotice] = useState("");
 
@@ -35,14 +35,9 @@ export default function LoginPage() {
       </section>
 
       <section className="login-panel">
-        <div className="login-panel-head"><span className="login-panel-kicker">Área de acesso</span><h2>Entrar no dashboard</h2><p>Administradores usam Google Workspace. O cliente entra com o PIN recebido.</p></div>
+        <div className="login-panel-head"><span className="login-panel-kicker">Área de acesso</span><h2>{mode === "pin" ? "Acesso ao calendário" : "Acesso administrativo"}</h2><p>{mode === "pin" ? "Digite o PIN recebido para acessar o calendário da Rede Pedro Pelanda." : "Entre com sua conta Google Workspace para acessar o painel administrativo."}</p></div>
 
-        <div className="access-options" role="tablist" aria-label="Tipo de acesso">
-          <button type="button" role="tab" aria-selected={mode === "google"} className={mode === "google" ? "access-option active" : "access-option"} onClick={() => { setMode("google"); setNotice(""); }}><span className="access-icon"><GoogleIcon /></span><span><strong>Entrar com Google</strong><small>Somente contas @dg5.com.br</small></span><i>→</i></button>
-          <button type="button" role="tab" aria-selected={mode === "pin"} className={mode === "pin" ? "access-option active" : "access-option"} onClick={() => { setMode("pin"); setNotice(""); }}><span className="access-icon"><PinIcon /></span><span><strong>Entrar com PIN</strong><small>Acesso do cliente</small></span><i>→</i></button>
-        </div>
-
-        {mode === "google" ? <div className="access-detail"><div className="detail-number">01</div><div><span className="login-panel-kicker">Acesso administrativo</span><h3>Entre com sua conta Google Workspace.</h3><p>O acesso será liberado somente para contas do domínio <strong>@dg5.com.br</strong>, após a conexão com o Firebase.</p><button type="button" className="login-action" onClick={() => setNotice("O login Google será conectado ao Firebase.")}><GoogleIcon /> Entrar com Google</button></div></div> : <form className="access-detail" onSubmit={handleSubmit}><div className="detail-number">02</div><div><span className="login-panel-kicker">Acesso do cliente</span><h3>Digite o PIN do seu calendário.</h3><p>O PIN é exclusivo do cliente e não expira automaticamente.</p><label className="pin-field"><span>PIN de acesso</span><input value={pin} onChange={(event) => setPin(event.target.value)} inputMode="numeric" autoComplete="one-time-code" maxLength={12} placeholder="Digite seu PIN" aria-label="PIN de acesso" /></label><button type="submit" className="login-action"><PinIcon /> Entrar com PIN</button></div></form>}
+        {mode === "google" ? <div className="access-detail"><div className="detail-number">01</div><div><span className="login-panel-kicker">Acesso administrativo</span><h3>Entre com sua conta Google Workspace.</h3><p>O acesso será liberado somente para contas do domínio <strong>@dg5.com.br</strong>, após a conexão com o Firebase.</p><button type="button" className="login-action" onClick={() => setNotice("O login Google será conectado ao Firebase.")}><GoogleIcon /> Entrar com Google</button><button type="button" className="back-access-link" onClick={() => { setMode("pin"); setNotice(""); }}>← Voltar para acesso por PIN</button></div></div> : <form className="access-detail" onSubmit={handleSubmit}><div className="detail-number">01</div><div><span className="login-panel-kicker">Acesso do cliente</span><h3>Digite o PIN do seu calendário.</h3><p>O PIN é exclusivo do cliente e não expira automaticamente.</p><label className="pin-field"><span>PIN de acesso</span><input value={pin} onChange={(event) => setPin(event.target.value)} inputMode="numeric" autoComplete="one-time-code" maxLength={12} placeholder="Digite seu PIN" aria-label="PIN de acesso" /></label><button type="submit" className="login-action"><PinIcon /> Entrar com PIN</button><button type="button" className="admin-access-link" onClick={() => { setMode("google"); setNotice(""); }}>Acesso admin <span aria-hidden="true">↗</span></button></div></form>}
 
         {notice ? <p className="login-notice" role="status">{notice}</p> : null}
         <div className="login-panel-footer"><span>Acesso protegido</span><Link href="/">Voltar ao site <span aria-hidden="true">↗</span></Link></div>

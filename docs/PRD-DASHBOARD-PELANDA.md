@@ -6,7 +6,7 @@
 **Produto:** `calendario-anual-pelanda`  
 **Fonte inicial:** [Calendário de Marketing 360º 2027](https://docs.google.com/spreadsheets/d/1YGQpiiTS8J3thN9t0t4N8ITA2UqWJuwbXvdogTscrd4/edit?gid=1847905513#gid=1847905513)
 
-**Entrada do app:** `/login`, com as opções **Entrar com Google** para administradores e **Entrar com PIN** para o cliente.
+**Entrada do app:** `/login`, inicialmente solicitando o PIN do cliente; o acesso administrativo fica disponível pelo link discreto **Acesso admin**.
 
 ## 1. Resumo
 
@@ -88,9 +88,9 @@ O app atual já entrega a primeira camada visual com visão anual, mensal e por 
 
 ### Tela de acesso
 
-1. A tela apresenta duas opções explícitas: **Entrar com Google** e **Entrar com PIN**.
-2. **Entrar com Google** é exclusivo dos administradores autenticados pelo Google Workspace `@dg5.com.br`.
-3. **Entrar com PIN** é exclusivo do cliente e solicita o PIN permanente cadastrado internamente.
+1. A tela inicial solicita diretamente o PIN do cliente.
+2. Um link discreto **Acesso admin** abre a entrada administrativa por Google Workspace `@dg5.com.br`.
+3. O PIN é exclusivo do cliente e solicita o PIN permanente cadastrado internamente.
 4. Nenhuma opção deve liberar o dashboard sem a validação real do Firebase.
 
 ### Fluxo B — Seleção do cliente
