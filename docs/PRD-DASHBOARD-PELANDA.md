@@ -1,7 +1,7 @@
 # PRD — Dashboard Anual de Marketing Pedro Pelanda
 
-**Status:** rascunho para validação humana  
-**Versão:** 0.1  
+**Status:** requisitos atualizados para validação humana  
+**Versão:** 0.2  
 **Data:** 26/08/2026  
 **Produto:** `calendario-anual-pelanda`  
 **Fonte inicial:** [Calendário de Marketing 360º 2027](https://docs.google.com/spreadsheets/d/1YGQpiiTS8J3thN9t0t4N8ITA2UqWJuwbXvdogTscrd4/edit?gid=1847905513#gid=1847905513)
@@ -14,18 +14,30 @@ Construir um app web para apresentar o calendário anual de marketing da Rede Pe
 - **Vermelho:** não será feito;
 - **Amarelo:** em análise.
 
-O app atual já entrega a primeira camada visual com visão anual, mensal e por unidade. A próxima fase é transformar o snapshot em um produto multi-cliente com acesso controlado e persistência no Firebase.
+O app atual já entrega a primeira camada visual com visão anual, mensal e por unidade. A próxima fase é transformar o snapshot em um produto de cliente único, com acesso controlado e persistência no Firebase.
+
+### Decisões confirmadas nesta versão
+
+- O MVP terá um único cliente e um único projeto/calendário.
+- Administradores entrarão com contas `@dg5.com.br`.
+- O cliente usará um PIN permanente, cadastrado internamente.
+- O cliente poderá apenas responder, por ação, se ela será feita ou não.
+- O cliente poderá visualizar o status administrativo verde, vermelho ou amarelo.
+- O sistema registrará que a escolha foi feita pelo cliente.
+- A planilha será usada somente como carga inicial.
+- Logos e cores serão reutilizados do projeto; não haverá upload de identidade visual no MVP.
+- O domínio de produção será `pelanda.dg5.com.br`, hospedado no Firebase e apontado pelo Cloudflare.
 
 ## 2. Objetivos
 
 ### Objetivos do MVP
 
-1. Compartilhar uma versão identificada do calendário com um cliente específico.
-2. Permitir entrada do cliente por um PIN temporário e revogável.
-3. Permitir que o cliente selecione as ações que deseja manter/executar.
+1. Compartilhar uma versão identificada do calendário com o cliente definido para o MVP.
+2. Permitir entrada do cliente por um PIN permanente, protegido e revogável manualmente.
+3. Permitir que o cliente responda somente se cada ação será feita ou não.
 4. Permitir que o administrador defina o status operacional de cada ação.
 5. Preservar histórico das escolhas e mudanças relevantes.
-6. Manter as cores da marca ou do cliente quando forem fornecidas em formato aprovado.
+6. Reutilizar as logos, cores e assets de marca já presentes no projeto.
 
 ### Fora do escopo inicial
 
@@ -41,13 +53,13 @@ O app atual já entrega a primeira camada visual com visão anual, mensal e por 
 
 ### Administrador interno
 
-- Acessa o painel por autenticação administrativa do Firebase.
-- Cria clientes e projetos.
+- Acessa o painel por autenticação do Firebase com conta `@dg5.com.br`.
+- Gerencia o único cliente e projeto do MVP.
 - Importa ou revisa uma versão do calendário.
-- Gera, expira e revoga códigos de acesso do cliente.
+- Cadastra, altera ou revoga o PIN permanente em caso de necessidade.
 - Visualiza escolhas do cliente.
 - Marca cada ação como verde, vermelho ou amarelo.
-- Registra observação interna e histórico da alteração.
+- Registra observação interna e histórico da alteração, incluindo a origem da escolha.
 
 ### Cliente convidado
 
@@ -55,20 +67,21 @@ O app atual já entrega a primeira camada visual com visão anual, mensal e por 
 - Entra por link do app e PIN válido.
 - Visualiza a versão do calendário compartilhada.
 - Filtra por ano, mês, unidade e categoria.
-- Seleciona as ações que deseja manter/executar.
-- Salva ou envia sua seleção para revisão.
+- Responde somente **será feito** ou **não será feito** para cada ação.
+- Confirma/envia as escolhas para o painel administrativo.
+- Visualiza o status administrativo verde, vermelho ou amarelo.
+- Não edita texto, data, unidade, categoria, orçamento ou qualquer outro dado.
 - Não altera o status administrativo.
-- Não acessa dados de outros clientes ou projetos.
 
 ## 4. Fluxos principais
 
 ### Fluxo A — Preparação interna
 
-1. Administrador cria o cliente e um projeto de calendário.
+1. Administrador configura o cliente e o único projeto de calendário.
 2. Administrador importa ou associa uma versão da planilha.
 3. Sistema cria um snapshot imutável da versão compartilhada.
-4. Administrador configura identidade visual, prazo e PIN.
-5. Sistema gera link de acesso e registra a validade do convite.
+4. Sistema reutiliza a identidade visual existente e o administrador cadastra o PIN permanente.
+5. Sistema gera o link de acesso e registra o convite sem data de expiração.
 
 ### Fluxo B — Seleção do cliente
 
@@ -76,9 +89,10 @@ O app atual já entrega a primeira camada visual com visão anual, mensal e por 
 2. Informa o PIN.
 3. Sistema valida o convite, aplica limite de tentativas e cria uma sessão restrita.
 4. Cliente navega pelo ano, meses e unidades.
-5. Cliente marca as ações que deseja manter.
-6. Cliente salva rascunho ou envia a seleção para revisão.
-7. Sistema registra data, versão e usuário convidado.
+5. Cliente responde, para cada ação, **será feito** ou **não será feito**.
+6. Cliente confirma e envia as respostas para revisão.
+7. Sistema registra data, versão, convite e a origem `client` da escolha.
+8. Cliente consegue visualizar os status administrativos já definidos.
 
 ### Fluxo C — Revisão administrativa
 
@@ -102,48 +116,54 @@ O app atual já entrega a primeira camada visual com visão anual, mensal e por 
 7. O calendário deve ser versionado; mudanças na planilha não podem alterar silenciosamente um projeto já enviado.
 8. Datas ou eventos ainda não confirmados devem permanecer identificados como pendentes.
 9. O sistema não deve inventar endereço, horário, contato, orçamento ou resultado de campanha.
-10. A seleção do cliente deve ter estado explícito: rascunho, enviada para revisão ou encerrada.
+10. A resposta do cliente deve ter estado explícito: não respondida, será feita, não será feita ou enviada.
+11. O histórico deve informar claramente quando uma escolha foi feita pelo cliente.
+12. O PIN não expira automaticamente, mas pode ser revogado ou regenerado manualmente pelo administrador.
+13. O acesso administrativo deve aceitar somente contas autenticadas cujo e-mail termine em `@dg5.com.br`.
 
 ## 6. Modelo funcional inicial
 
 ### Entidades
 
-- **Client:** cliente, nome, organização, status, identidade visual.
-- **Project:** calendário compartilhado, ano, cliente, versão, prazo e estado.
+- **Client:** o cliente único, nome, organização e status.
+- **Project:** o único calendário compartilhado, ano, versão, prazo opcional e estado.
 - **Action:** ação do calendário, mês, data, unidade, categoria, abrangência, conteúdo e mídia paga.
-- **ClientSelection:** escolha do cliente por ação, autor, data e estado.
+- **ClientSelection:** resposta binária do cliente por ação, autor, data, estado e origem `client`.
 - **AdminDecision:** status verde/vermelho/amarelo, observação e histórico.
-- **Invite:** código/PIN, projeto, validade, tentativas, revogação e último uso.
+- **Invite:** código/PIN em hash, projeto, tentativas, revogação e último uso; sem expiração automática.
 - **AuditEvent:** alterações relevantes, autor, timestamp e referência do registro.
 
 ### Estados sugeridos
 
 **Projeto:** `draft`, `shared`, `client_submitted`, `under_review`, `approved`, `closed`.  
-**Seleção:** `not_selected`, `selected`, `submitted`.  
+**Seleção:** `unanswered`, `will_do`, `will_not_do`, `submitted`.  
 **Decisão:** `analysis`, `approved`, `rejected`.
 
 ## 7. Direção técnica Firebase
 
 - **Firebase Hosting:** hospedagem do app web.
-- **Firebase Authentication:** autenticação dos administradores.
+- **Firebase Authentication:** autenticação dos administradores com provedor Google e restrição ao domínio `@dg5.com.br`.
 - **Cloud Firestore:** clientes, projetos, ações, seleções, decisões e auditoria.
 - **Cloud Functions 2nd Gen:** validação do PIN, criação de sessão restrita, importação/versionamento e operações administrativas sensíveis.
 - **Firebase App Check:** avaliar antes da publicação pública.
-- **Storage:** somente se a identidade visual exigir upload de logos ou arquivos; não é necessário para o MVP se as cores forem campos HEX.
+- **Storage:** não necessário para o MVP; logos e cores já existem no projeto.
+- **Projeto Firebase informado:** [`clendario-pelanda`](https://console.firebase.google.com/u/0/project/clendario-pelanda/overview).
+- **Domínio final:** `pelanda.dg5.com.br`, configurado no Firebase Hosting e apontado pelo Cloudflare.
 
 ### Recomendação de segurança para o PIN
 
-PIN não deve ser um usuário compartilhado permanente. Para o MVP, usar um convite por projeto com PIN temporário, validade, revogação, limite de tentativas, hash armazenado no servidor e sessão Firebase restrita ao `projectId` autorizado. Se o conteúdo for comercialmente sensível ou o acesso precisar ser individual, substituir ou complementar o PIN por convite autenticado e-mail/OIDC.
+O MVP usará um PIN permanente por decisão de produto. O PIN não deve ser armazenado em texto puro: deve ser validado por função segura, armazenado somente como hash, ter limite de tentativas e permitir revogação/regeneração manual. A sessão do cliente deve ficar restrita ao projeto único autorizado. Todos os usuários administrativos de teste devem autenticar com contas `@dg5.com.br`; o frontend não deve confiar apenas no domínio informado pelo navegador.
 
 ## 8. Critérios de aceite do MVP
 
 - [ ] Cliente válido entra somente no projeto correto.
-- [ ] PIN expirado, revogado ou excedendo tentativas não permite acesso.
-- [ ] Cliente consegue selecionar ações e salvar rascunho.
-- [ ] Cliente consegue enviar sua seleção para revisão.
+- [ ] PIN revogado ou excedendo tentativas não permite acesso; o PIN não expira automaticamente.
+- [ ] Cliente consegue responder somente será feito/não será feito por ação.
+- [ ] Cliente consegue enviar suas respostas para revisão.
 - [ ] Administrador consegue marcar cada ação com verde, vermelho ou amarelo.
+- [ ] Cliente consegue visualizar os status administrativos já definidos.
 - [ ] Cliente não consegue alterar decisão administrativa nem acessar outro projeto.
-- [ ] Alterações de decisão aparecem no histórico.
+- [ ] Escolhas do cliente e alterações de decisão aparecem no histórico com autor/origem.
 - [ ] Filtros por ano, mês e unidade mantêm os números coerentes.
 - [ ] App funciona em desktop e celular sem estouro horizontal.
 - [ ] Regras do Firestore são testadas com usuário administrador, cliente autorizado, cliente não autorizado e usuário anônimo.
@@ -151,41 +171,47 @@ PIN não deve ser um usuário compartilhado permanente. Para o MVP, usar um conv
 
 ## 9. Dados que ainda precisamos definir
 
-### Produto e operação
+### Produto e operação — decidido
 
-1. Será um único cliente por vez ou vários clientes/projetos simultâneos?
-2. O cliente apenas seleciona ações ou também pode editar texto, datas, unidades e ideias?
-3. Depois de enviar, o cliente pode reabrir a seleção ou ela fica bloqueada?
-4. O cliente vê o status verde/vermelho/amarelo ou somente a seleção final?
-5. O status será por ação individual, por mês ou pelos dois níveis?
-6. Haverá prazo de resposta e lembretes manuais?
-7. O administrador poderá alterar uma ação depois da aprovação do cliente?
+1. O MVP terá um único cliente e um único projeto.
+2. O cliente somente responde será feito/não será feito; não edita outros dados.
+3. O cliente poderá visualizar os status verde/vermelho/amarelo definidos pelo administrador.
+4. O cliente poderá confirmar e enviar suas respostas; o sistema registrará a origem da escolha.
+5. O status administrativo será por ação individual.
+6. A planilha será somente carga inicial; não haverá sincronização automática.
 
-### Acesso e segurança
+### Produto e operação — confirmar antes do contrato técnico
 
-1. Qual será o nível de sensibilidade do calendário: público, interno ou confidencial?
-2. O PIN terá validade definida? Sugestão inicial: convite com validade configurável e revogação manual.
-3. O cliente será uma pessoa, uma equipe ou vários usuários do mesmo projeto?
-4. Como o administrador fará login: Google Workspace, e-mail/senha ou outro provedor?
-5. É necessário recuperar acesso sem intervenção manual?
+1. Após enviar, o cliente poderá alterar novamente suas respostas ou o envio ficará bloqueado?
+2. O PIN será um único PIN compartilhado para o projeto, conforme a leitura atual, ou haverá PINs separados por pessoa?
+3. O administrador poderá alterar a decisão depois do envio do cliente? Recomendação: sim, mantendo o histórico.
 
-### Marca e conteúdo
+### Acesso e segurança — decidido
 
-1. As cores enviadas serão da Rede Pedro Pelanda ou de cada cliente/projeto?
-2. As cores serão fornecidas em HEX, imagem de referência ou manual de marca?
-3. As cores alteram somente a interface ou também o status das ações?
-4. O cliente poderá enviar logo e materiais ou isso continuará interno?
+1. Administradores: contas autenticadas com domínio `@dg5.com.br`.
+2. Todos os usuários `@dg5.com.br` poderão testar o painel, conforme as regras de autorização.
+3. Cliente: acesso por PIN permanente.
+
+### Acesso e segurança — confirmar antes da publicação
+
+1. O login admin será exclusivamente Google Workspace ou também aceitará e-mail/senha?
+2. O domínio `dg5.com.br` está configurado no Google/Firebase para permitir o provedor escolhido?
+3. Qual conta fará a primeira configuração do Firebase e será responsável pelo billing?
+
+### Marca e conteúdo — decidido
+
+1. O projeto já contém as logos, cores e assets oficiais a serem reutilizados.
+2. O cliente não fará upload nem edição de identidade visual.
+3. As cores de status continuam fixas: verde será feito, vermelho não será feito e amarelo em análise.
 
 ### Fonte de dados e publicação
 
-1. A planilha continuará sendo a fonte principal ou será apenas a carga inicial?
-2. A importação será manual por versão ou deverá sincronizar automaticamente?
-3. Qual projeto Firebase será usado?
-4. Qual conta terá acesso administrativo ao Firebase e ao GitHub?
-5. Qual região do Firebase deve ser adotada? Sugestão: `southamerica-east1`, sujeita à validação de disponibilidade e custo.
-6. Qual domínio será usado para compartilhar o app?
-7. Há orçamento/billing habilitado para Hosting, Functions e Firestore?
-8. Quem aprova o go-live e qual será o procedimento de rollback?
+1. Fonte: a planilha será somente carga inicial; o Firestore será a fonte após a importação.
+2. Projeto Firebase: `clendario-pelanda`.
+3. Domínio: `pelanda.dg5.com.br`, com DNS gerenciado/apontado pelo Cloudflare para o Firebase Hosting.
+4. Conta responsável pelo Firebase, billing e primeira configuração.
+5. Região do Firestore/Functions, com recomendação inicial de `southamerica-east1`, sujeita à confirmação de disponibilidade e custo.
+6. Quem aprova o go-live e qual será o procedimento de rollback.
 
 ## 10. Plano de implementação recomendado
 
@@ -197,7 +223,7 @@ PIN não deve ser um usuário compartilhado permanente. Para o MVP, usar um conv
 
 ### Fase 2 — Backend seguro
 
-- Criar projeto Firebase separado por ambiente.
+- Usar o projeto Firebase informado para o MVP; criar staging separado somente se for necessário e aprovado.
 - Implementar Auth administrativo.
 - Implementar Firestore, Functions de convite/PIN e regras de segurança.
 - Criar testes de autorização e auditoria.
@@ -241,4 +267,4 @@ PIN não deve ser um usuário compartilhado permanente. Para o MVP, usar um conv
 
 ## 12. Próxima ação
 
-Validar as perguntas da seção 9 e enviar as cores. Com isso fechado, o próximo artefato será o contrato técnico do Firebase, antes de qualquer criação de projeto, regra, usuário ou deploy.
+Validar os pontos ainda abertos da seção 9, confirmar a conta administradora/billing e o provedor de login. Com isso fechado, o próximo artefato será o contrato técnico do Firebase, antes de qualquer criação de regra, usuário ou deploy.
