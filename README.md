@@ -6,6 +6,7 @@ App web da Rede Pedro Pelanda para visualização do calendário de marketing 36
 
 - `/` — site institucional em português do Brasil.
 - `/dashboard` — dashboard visual com visão anual, mensal e por unidade.
+- `/login` — tela de acesso com entrada administrativa por Google e entrada do cliente por PIN.
 - `/admin` — protótipo do painel editorial.
 
 O dashboard publicado nesta primeira versão usa um snapshot validado da planilha de planejamento. A integração persistente com Firebase está descrita em [`docs/PRD-DASHBOARD-PELANDA.md`](docs/PRD-DASHBOARD-PELANDA.md) e será implementada após a validação do PRD.
