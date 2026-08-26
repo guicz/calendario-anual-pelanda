@@ -1,7 +1,7 @@
 # PRD — Dashboard Anual de Marketing Pedro Pelanda
 
 **Status:** requisitos atualizados para validação humana  
-**Versão:** 0.2  
+**Versão:** 0.3  
 **Data:** 26/08/2026  
 **Produto:** `calendario-anual-pelanda`  
 **Fonte inicial:** [Calendário de Marketing 360º 2027](https://docs.google.com/spreadsheets/d/1YGQpiiTS8J3thN9t0t4N8ITA2UqWJuwbXvdogTscrd4/edit?gid=1847905513#gid=1847905513)
@@ -93,7 +93,9 @@ O app atual já entrega a primeira camada visual com visão anual, mensal e por 
 5. Cliente responde, para cada ação, **será feito** ou **não será feito**.
 6. Cliente confirma e envia as respostas para revisão.
 7. Sistema registra data, versão, convite e a origem `client` da escolha.
-8. Cliente consegue visualizar os status administrativos já definidos.
+8. Cliente pode reabrir a seleção e alterar respostas mesmo após o envio.
+9. Cada novo envio preserva o histórico da resposta anterior e registra a nova origem `client`.
+10. Cliente consegue visualizar os status administrativos já definidos.
 
 ### Fluxo C — Revisão administrativa
 
@@ -121,6 +123,7 @@ O app atual já entrega a primeira camada visual com visão anual, mensal e por 
 11. O histórico deve informar claramente quando uma escolha foi feita pelo cliente.
 12. O PIN não expira automaticamente, mas pode ser revogado ou regenerado manualmente pelo administrador.
 13. O acesso administrativo deve aceitar somente contas autenticadas cujo e-mail termine em `@dg5.com.br`.
+14. O cliente pode alterar e reenviar respostas; as versões anteriores não devem ser apagadas do histórico.
 
 ## 6. Modelo funcional inicial
 
@@ -161,6 +164,7 @@ O MVP usará um PIN permanente somente para o acesso do cliente, por decisão de
 - [ ] PIN revogado ou excedendo tentativas não permite acesso; o PIN não expira automaticamente.
 - [ ] Cliente consegue responder somente será feito/não será feito por ação.
 - [ ] Cliente consegue enviar suas respostas para revisão.
+- [ ] Cliente consegue alterar e reenviar respostas após o primeiro envio.
 - [ ] Administrador consegue marcar cada ação com verde, vermelho ou amarelo.
 - [ ] Cliente consegue visualizar os status administrativos já definidos.
 - [ ] Cliente não consegue alterar decisão administrativa nem acessar outro projeto.
@@ -177,27 +181,24 @@ O MVP usará um PIN permanente somente para o acesso do cliente, por decisão de
 1. O MVP terá um único cliente e um único projeto.
 2. O cliente somente responde será feito/não será feito; não edita outros dados.
 3. O cliente poderá visualizar os status verde/vermelho/amarelo definidos pelo administrador.
-4. O cliente poderá confirmar e enviar suas respostas; o sistema registrará a origem da escolha.
+4. O cliente poderá confirmar, enviar, alterar e reenviar suas respostas; o sistema registrará a origem da escolha.
 5. O status administrativo será por ação individual.
 6. A planilha será somente carga inicial; não haverá sincronização automática.
 
 ### Produto e operação — confirmar antes do contrato técnico
 
-1. Após enviar, o cliente poderá alterar novamente suas respostas ou o envio ficará bloqueado?
-2. O PIN será um único PIN compartilhado para o projeto, conforme a leitura atual, ou haverá PINs separados por pessoa?
-3. O administrador poderá alterar a decisão depois do envio do cliente? Recomendação: sim, mantendo o histórico.
+1. O administrador poderá alterar a decisão depois do envio do cliente? Recomendação: sim, mantendo o histórico.
 
 ### Acesso e segurança — decidido
 
-1. Administradores: contas autenticadas com domínio `@dg5.com.br`.
+1. Administradores: login exclusivamente Google Workspace com contas `@dg5.com.br`.
 2. Todos os usuários `@dg5.com.br` poderão testar o painel, conforme as regras de autorização.
-3. Cliente: acesso por PIN permanente; administradores não usam PIN.
+3. Cliente: acesso por PIN permanente, usado somente pelo cliente; administradores não usam PIN.
 
 ### Acesso e segurança — confirmar antes da publicação
 
-1. O login admin será exclusivamente Google Workspace ou também aceitará e-mail/senha?
-2. O domínio `dg5.com.br` está configurado no Google/Firebase para permitir o provedor escolhido?
-3. Qual conta fará a primeira configuração do Firebase e será responsável pelo billing?
+1. O domínio `dg5.com.br` está configurado no Google/Firebase para permitir o Google Workspace escolhido?
+2. Qual conta fará a primeira configuração do Firebase e será responsável pelo billing?
 
 ### Marca e conteúdo — decidido
 
