@@ -21,6 +21,7 @@ O app atual já entrega a primeira camada visual com visão anual, mensal e por 
 - O MVP terá um único cliente e um único projeto/calendário.
 - Administradores entrarão com contas `@dg5.com.br`.
 - O cliente usará um PIN permanente, cadastrado internamente.
+- O PIN será usado exclusivamente pelo cliente; administradores nunca acessarão por PIN.
 - O cliente poderá apenas responder, por ação, se ela será feita ou não.
 - O cliente poderá visualizar o status administrativo verde, vermelho ou amarelo.
 - O sistema registrará que a escolha foi feita pelo cliente.
@@ -56,7 +57,7 @@ O app atual já entrega a primeira camada visual com visão anual, mensal e por 
 - Acessa o painel por autenticação do Firebase com conta `@dg5.com.br`.
 - Gerencia o único cliente e projeto do MVP.
 - Importa ou revisa uma versão do calendário.
-- Cadastra, altera ou revoga o PIN permanente em caso de necessidade.
+- Cadastra, altera ou revoga o PIN permanente do cliente em caso de necessidade.
 - Visualiza escolhas do cliente.
 - Marca cada ação como verde, vermelho ou amarelo.
 - Registra observação interna e histórico da alteração, incluindo a origem da escolha.
@@ -150,9 +151,9 @@ O app atual já entrega a primeira camada visual com visão anual, mensal e por 
 - **Projeto Firebase informado:** [`clendario-pelanda`](https://console.firebase.google.com/u/0/project/clendario-pelanda/overview).
 - **Domínio final:** `pelanda.dg5.com.br`, configurado no Firebase Hosting e apontado pelo Cloudflare.
 
-### Recomendação de segurança para o PIN
+### Recomendação de segurança para o PIN do cliente
 
-O MVP usará um PIN permanente por decisão de produto. O PIN não deve ser armazenado em texto puro: deve ser validado por função segura, armazenado somente como hash, ter limite de tentativas e permitir revogação/regeneração manual. A sessão do cliente deve ficar restrita ao projeto único autorizado. Todos os usuários administrativos de teste devem autenticar com contas `@dg5.com.br`; o frontend não deve confiar apenas no domínio informado pelo navegador.
+O MVP usará um PIN permanente somente para o acesso do cliente, por decisão de produto. O PIN não deve ser armazenado em texto puro: deve ser validado por função segura, armazenado somente como hash, ter limite de tentativas e permitir revogação/regeneração manual. A sessão do cliente deve ficar restrita ao projeto único autorizado. Administradores nunca usarão PIN: devem autenticar com contas `@dg5.com.br`; o frontend não deve confiar apenas no domínio informado pelo navegador.
 
 ## 8. Critérios de aceite do MVP
 
@@ -190,7 +191,7 @@ O MVP usará um PIN permanente por decisão de produto. O PIN não deve ser arma
 
 1. Administradores: contas autenticadas com domínio `@dg5.com.br`.
 2. Todos os usuários `@dg5.com.br` poderão testar o painel, conforme as regras de autorização.
-3. Cliente: acesso por PIN permanente.
+3. Cliente: acesso por PIN permanente; administradores não usam PIN.
 
 ### Acesso e segurança — confirmar antes da publicação
 
